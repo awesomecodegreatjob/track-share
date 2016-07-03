@@ -17,4 +17,4 @@ Route::get('/', function () {
 
 Route::get('search', 'SearchController@search');
 Route::get('google/{id}', 'SearchController@google');
-Route::get('spotify/{id}', 'SearchController@spotify');
+Route::get('spotify/{type}/{id}', 'SearchController@spotify');
