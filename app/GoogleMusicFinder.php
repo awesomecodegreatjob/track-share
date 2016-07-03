@@ -17,7 +17,7 @@ class GoogleMusicFinder
         $is_match = preg_match("/play.google.com\/music\/m\/(\w+)/", $uri, $matches);
 
         if(! $is_match) {
-            $is_match = preg_match("play.google.com/music/listen\?.*album/(\w+)", $uri, $matches);
+            $is_match = preg_match("/play\.google\.com\/music\/listen\?.*album\/(\w+)/", $uri, $matches);
         }
 
         if($is_match === 1) {
@@ -102,7 +102,7 @@ class GoogleMusicFinder
         // Initialize crawler
         $crawler = new Crawler($response_body);
         $search_result = $crawler->filter('#main-content-container');
-        
+
         // Get image link
         $el_image = $crawler->filter('.album-art');
         $image = $el_image->attr('src');

@@ -6,7 +6,10 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.1.*"
+        "laravel/framework": "5.1.*",
+        "mervick/curl-helper": "^1.1",
+       "symfony/dom-crawler": "^2.7",
+       "symfony/css-selector": "^2.7"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

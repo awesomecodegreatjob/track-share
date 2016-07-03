@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "55e0189572197de0b563540cd8aae6d3",
-    "content-hash": "5bd58fd976f1ee3e9611bc37c006ec46",
+    "hash": "591feaf7b0f7e6c019ec6419c548a03e",
+    "content-hash": "470b1e583a0e79bfc16b68c1af9b94a0",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -573,6 +573,42 @@
                 "storage"
             ],
             "time": "2016-06-03 19:11:39"
+        },
+        {
+            "name": "mervick/curl-helper",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mervick/curl-helper.git",
+                "reference": "64cb70b8d1211b8d1179b309b7177cbc8eccde1a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mervick/curl-helper/zipball/64cb70b8d1211b8d1179b309b7177cbc8eccde1a",
+                "reference": "64cb70b8d1211b8d1179b309b7177cbc8eccde1a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "CurlHelper": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andrey Izman",
+                    "email": "izman.dev@gmail.com"
+                }
+            ],
+            "description": "PHP Curl Helper",
+            "time": "2016-04-28 22:37:39"
         },
         {
             "name": "monolog/monolog",
