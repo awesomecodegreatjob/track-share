@@ -13,6 +13,34 @@ class SpotifyFinder
             || strpos($uri, 'spotify:track') !== false;
     }
 
+    public function music_id($uri)
+    {
+        $is_match = preg_match("/\/\/open\.spotify\.com\/(album|track)\/(\w+)/", $uri, $matches);
+
+        if(! $is_match) {
+            $is_match = preg_match("/spotify:(album|track):(\w+)/", $uri, $matches);
+        }
+
+        if($is_match === 1) {
+            return [$matches[1], $matches[2]];
+        }
+    }
+
+    public function music_info_by_id($type, $id)
+    {
+        $info = new MusicInfo;
+
+        if($type == 'album') {
+            $music_info = $this->fetchAlbumInfo($id);
+        } else {
+            $music_info = $this->fetchTrackInfo($id);
+        }
+
+        $info->fill($music_info);
+
+        return $info;
+    }
+
     public function music_info($uri)
     {
         $is_match = preg_match("/\/\/open\.spotify\.com\/(album|track)\/(\w+)/", $uri, $matches);

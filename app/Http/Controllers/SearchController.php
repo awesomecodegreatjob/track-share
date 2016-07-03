@@ -12,37 +12,49 @@ use App\Http\Controllers\Controller;
 
 class SearchController extends Controller
 {
+    public function __construct()
+    {
+        $this->gmusic_service = new GoogleMusicFinder;
+        $this->spotify_service = new SpotifyFinder;
+    }
+
     public function search(Request $request)
     {
         $url = $request->input('url');
 
-        $gmusic_service = new GoogleMusicFinder;
-        $spotify_service = new SpotifyFinder;
-
         $agent = null;
         $music_info = null;
 
-        if($gmusic_service->matches($url)) {
+        if($this->gmusic_service->matches($url)) {
             $agent = 'Google';
-            $music_info = $gmusic_service->music_info($url);
-        } else if($spotify_service->matches($url)) {
-            $agent = 'Spotify';
-            $music_info = $spotify_service->music_info($url);
-        }
+            $google_track_data = $this->gmusic_service->music_id($url);
 
-        return view('action.search.search', [
-            'agent' => $agent,
-            'info' => $music_info,
-        ]);
+            return redirect('google/' . $google_track_data);
+        } else if($this->spotify_service->matches($url)) {
+            $agent = 'Spotify';
+            $spotify_track_data = $this->spotify_service->music_id($url);
+
+            return redirect('spotify/' . $spotify_track_data[0] . '/' . $spotify_track_data[1]);
+        }
     }
 
     public function google($id)
     {
+        $music_info = $this->gmusic_service->music_info_by_id($id);
 
+        return view('action.search.search', [
+            'agent' => 'Google',
+            'info' => $music_info,
+        ]);
     }
 
-    public function spotify($id)
+    public function spotify($type, $id)
     {
+        $music_info = $this->spotify_service->music_info_by_id($type, $id);
 
+        return view('action.search.search', [
+            'agent' => 'Spotify',
+            'info' => $music_info,
+        ]);
     }
 }

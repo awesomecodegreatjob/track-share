@@ -12,6 +12,29 @@ class GoogleMusicFinder
         return strpos($uri, 'play.google.com') !== false;
     }
 
+    public function music_id($uri)
+    {
+        $is_match = preg_match("/play.google.com\/music\/m\/(\w+)/", $uri, $matches);
+
+        if(! $is_match) {
+            $is_match = preg_match("/play\.google\.com\/music\/listen\?.*album\/(\w+)/", $uri, $matches);
+        }
+
+        if($is_match === 1) {
+            return $matches[1];
+        }
+    }
+
+    public function music_info_by_id($id)
+    {
+        $info = new MusicInfo;
+
+        $music_info = $this->fetchMusicInfo($id);
+        $info->fill($music_info);
+
+        return $info;
+    }
+
     public function music_info($uri)
     {
         $is_match = preg_match("/play.google.com\/music\/m\/(\w+)/", $uri, $matches);
