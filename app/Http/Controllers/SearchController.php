@@ -12,6 +12,9 @@ use App\Http\Controllers\Controller;
 
 class SearchController extends Controller
 {
+    protected $gmusic_service;
+    protected $spotify_service;
+
     public function __construct()
     {
         $this->gmusic_service = new GoogleMusicFinder;
@@ -26,12 +29,10 @@ class SearchController extends Controller
         $music_info = null;
 
         if($this->gmusic_service->matches($url)) {
-            $agent = 'Google';
             $google_track_data = $this->gmusic_service->music_id($url);
 
             return redirect('google/' . $google_track_data);
         } else if($this->spotify_service->matches($url)) {
-            $agent = 'Spotify';
             $spotify_track_data = $this->spotify_service->music_id($url);
 
             return redirect('spotify/' . $spotify_track_data[0] . '/' . $spotify_track_data[1]);
@@ -40,21 +41,32 @@ class SearchController extends Controller
 
     public function google($id)
     {
-        $music_info = $this->gmusic_service->music_info_by_id($id);
+        $google_info = $this->gmusic_service->music_info_by_id($id);
+        
+        $spotify_info = $this->spotify_service->search($google_info);
+        
+        // temp image fix
+        $google_info->image_link = $spotify_info->image_link;
 
         return view('action.search.search', [
             'agent' => 'Google',
-            'info' => $music_info,
+            'info' => $google_info,
+            'google_link' => $google_info->link,
+            'spotify_link' => $spotify_info->link,
         ]);
     }
 
     public function spotify($type, $id)
     {
-        $music_info = $this->spotify_service->music_info_by_id($type, $id);
+        $spotify_info = $this->spotify_service->music_info_by_id($type, $id);
+        
+        $google_info = $this->gmusic_service->search($spotify_info);
 
         return view('action.search.search', [
             'agent' => 'Spotify',
-            'info' => $music_info,
+            'info' => $spotify_info,
+            'google_link' => $google_info->link,
+            'spotify_link' => $spotify_info->link,
         ]);
     }
 }
