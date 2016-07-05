@@ -16,8 +16,8 @@
       <div class="small-4 small-offset-4">
 
          <form action="search">
-            <input type="text" name="url">
-            <input type="submit" class="button small">
+            <input type="text" name="url" placeholder="Google Music or Spotify link">
+            <input type="submit" class="button small expand" value="share">
          </form>
 
       </div>

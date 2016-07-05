@@ -5,7 +5,7 @@
 
 --}}
 
-<!doctype html>
+        <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,19 +16,32 @@
     <meta property="og:title" content="{{ $info->title }} by {{ $info->artist }}">
     <meta property="og:image" content="{{ $info->image_link }}">
 
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/normalize.min.css">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/foundation.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/normalize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/foundation.min.css">
 
 </head>
 <body>
 
-   <h2>Agent: {{ $agent }}</h2>
+<div class="row">
+    <div class="small-12 columns text-center">
+        <img src="{{ $info->image_link }}" alt="{{ $info->title }}"/>
+    </div>
+</div>
+<div class="row">
+    <div class="small-12 columns text-center">
+        <h3>{{ $info->title }} <small>by: {{ $info->artist }}</small></h3>
+    </div>
+</div>
+<div class="row">
+    <div class="small-6 columns text-right">
+        <a class="button small alert" href="{{ $google_link }}" target="_blank">Listen on Google Music</a>
+    </div>
+    <div class="small-6 columns">
+        <a class="button small success" href="{{ $spotify_link }}" target="_blank">Listen on Spotify</a>
+    </div>
+</div>
 
-   <img src="{{ $info->image_link }}" alt="{{ $info->title }}" />
-   <h3>{{ $info->title }}</h3>
-   <p>by: {{ $info->artist }}</p>
-
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/js/foundation.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/js/foundation.min.js"></script>
 </body>
 </html>
