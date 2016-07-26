@@ -5,15 +5,16 @@
 
 --}}
 
-        <!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>{{ $info->title }} by {{ $info->artist }}</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta property="og:title" content="{{ $info->title }} by {{ $info->artist }}">
+    <meta property="og:description" content="Share album and track links with all your friends">
     <meta property="og:image" content="{{ $info->image_link }}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/normalize.min.css">
