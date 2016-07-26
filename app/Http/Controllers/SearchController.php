@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Cache;
 use App\GoogleMusicFinder;
 use App\SpotifyFinder;
 
@@ -41,32 +42,44 @@ class SearchController extends Controller
 
     public function google($id)
     {
-        $google_info = $this->gmusic_service->music_info_by_id($id);
-        
-        $spotify_info = $this->spotify_service->search($google_info);
-        
-        // temp image fix
-        $google_info->image_link = $spotify_info->image_link;
+        return Cache::get('google_'.$id, function() use ($id) {
+            $google_info = $this->gmusic_service->music_info_by_id($id);
 
-        return view('action.search.search', [
-            'agent' => 'Google',
-            'info' => $google_info,
-            'google_link' => $google_info->link,
-            'spotify_link' => $spotify_info->link,
-        ]);
+            $spotify_info = $this->spotify_service->search($google_info);
+
+            // temp image fix
+            $google_info->image_link = $spotify_info->image_link;
+
+            $rendered_result = view('action.search.search', [
+                'agent'        => 'Google',
+                'info'         => $google_info,
+                'google_link'  => $google_info->link,
+                'spotify_link' => $spotify_info->link,
+            ]);
+
+            Cache::put('google_'.$id, $rendered_result->render(), 10080);
+
+            return $rendered_result;
+        });
     }
 
     public function spotify($type, $id)
     {
-        $spotify_info = $this->spotify_service->music_info_by_id($type, $id);
-        
-        $google_info = $this->gmusic_service->search($spotify_info);
+        return Cache::get('spotify_'.$type.':'.$id, function() use ($type, $id) {
+            $spotify_info = $this->spotify_service->music_info_by_id($type, $id);
 
-        return view('action.search.search', [
-            'agent' => 'Spotify',
-            'info' => $spotify_info,
-            'google_link' => $google_info->link,
-            'spotify_link' => $spotify_info->link,
-        ]);
+            $google_info = $this->gmusic_service->search($spotify_info);
+
+            $rendered_result = view('action.search.search', [
+                'agent' => 'Spotify',
+                'info' => $spotify_info,
+                'google_link' => $google_info->link,
+                'spotify_link' => $spotify_info->link,
+            ]);
+
+            Cache::put('spotify_'.$type.':'.$id, $rendered_result->render(), 10080);
+
+            return $rendered_result;
+        });
     }
 }
