@@ -1,0 +1,64 @@
+html {
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+
+body {
+  margin: 0;
+  background: #D6D6D6; }
+
+header {
+  background: #8C292F;
+  padding: 1em; }
+  header h1 {
+    font-family: "Bungee Inline", cursive;
+    color: #FFFFFF;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: block; }
+
+main {
+  background: #FFFFFF;
+  min-height: 70vh;
+  padding: 4em 2em; }
+
+footer {
+  text-align: center;
+  padding: 2em;
+  font-size: 0.75em;
+  color: #FFFFFF; }
+
+.back-button {
+  display: block;
+  max-width: 600px;
+  text-align: left;
+  margin: 0 auto 1em; }
+
+.image_link {
+  max-width: 600px;
+  margin: 0 auto;
+  display: block;
+  width: 100%; }
+
+.link-share-button {
+  width: 100%; }
+
+@media all and (min-width: 640px) {
+  .link-share-button {
+    width: auto; } }
+
+.google {
+  background: #FF6226; }
+
+.google:hover {
+  background: #E9530A; }
+
+.spotify {
+  background: #02BB4F; }
+
+.spotify:hover {
+  background: #00B240; }
+
+/*# sourceMappingURL=app.css.map */
