@@ -59,8 +59,9 @@
 .icon-headphones:before { content: '\e801'; } /* '' */
 .icon-fast-backward:before { content: '\e802'; } /* '' */
 .icon-note-beamed:before { content: '\e803'; } /* '' */
+.icon-gmusic:before { content: '\e809'; } /* '' */
 .icon-twitter:before { content: '\f099'; } /* '' */
 .icon-facebook:before { content: '\f09a'; } /* '' */
 .icon-mic:before { content: '\f130'; } /* '' */
-.icon-google:before { content: '\f1a0'; } /* '' */
+.icon-google-1:before { content: '\f1a0'; } /* '' */
 .icon-spotify:before { content: '\f1bc'; } /* '' */

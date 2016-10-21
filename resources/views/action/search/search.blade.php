@@ -45,7 +45,7 @@
 <br/>
 <div class="row">
     <div class="medium-6 small-12 columns text-right">
-        <a class="button google small  link-share-button" href="{{ $google_link }}" target="_blank">Listen on Google&nbsp;Music&nbsp;<i class="icon-headphones"></i></a>
+        <a class="button google small  link-share-button" href="{{ $google_link }}" target="_blank">Listen on Google&nbsp;Music&nbsp;<i class="icon-gmusic"></i></a>
     </div>
     <div class="medium-6 small-12 columns">
         <a class="button spotify small  link-share-button" href="{{ $spotify_link }}" target="_blank">Listen on Spotify&nbsp;<i class="icon-spotify"></i></a>
