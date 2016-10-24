@@ -1,6 +1,8 @@
 # Track Share
 A web app that makes sharing music between streaming providers easier.
 
+Built using [Laravel 5.1](https://laravel.com/docs/5.1)
+
 ## Setup
 ```
 git clone git@github.com:awesomecodegreatjob/track-share.git
