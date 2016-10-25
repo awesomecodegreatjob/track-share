@@ -30,6 +30,8 @@ class SpotifyFinder
      */
     public function music_id($uri)
     {
+        if( ! $this->matches($uri)) return false;
+
         $is_match = preg_match("/\/\/open\.spotify\.com\/(album|track)\/(\w+)/", $uri, $matches);
 
         if(! $is_match) {
