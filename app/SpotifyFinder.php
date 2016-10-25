@@ -26,7 +26,7 @@ class SpotifyFinder
      *
      * @param  string  $uri
      *
-     * @return  string[ resource type, resource id ]|false
+     * @return  string[ resource type, resource id ]|bool
      */
     public function music_id($uri)
     {
