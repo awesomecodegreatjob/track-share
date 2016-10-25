@@ -168,6 +168,14 @@ class SpotifyFinder
      */
     public function search(MusicInfo $info)
     {
+        if(
+            null === $info->title
+               || null === $info->artist
+               || null === $info->type
+          ) {
+            throw new \InvalidArgumentException('Required search criteria not provided');
+        }
+
         $artist = str_replace(' ', '+', $info->artist);
         $title = str_replace(' ', '+', $info->title);
 

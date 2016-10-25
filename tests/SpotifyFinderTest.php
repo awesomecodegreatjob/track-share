@@ -116,4 +116,58 @@ class SpotifyFinderTest extends TestCase
 
         $this->assertNull($finder->search($music));
     }
+
+    /**
+     * @test
+     *
+     * @expectedException  InvalidArgumentException
+     */
+    public function it_throws_an_exception_if_search_title_not_provided()
+    {
+        $finder = new SpotifyFinder;
+
+        $music = new MusicInfo;
+        $music->fill([
+            'artist' => 'noone',
+            'type' => 'track',
+        ]);
+
+        $finder->search($music);
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException  InvalidArgumentException
+     */
+    public function it_throws_an_exception_if_search_artist_not_provided()
+    {
+        $finder = new SpotifyFinder;
+
+        $music = new MusicInfo;
+        $music->fill([
+            'title' => 'nothinghere',
+            'type' => 'track',
+        ]);
+
+        $finder->search($music);
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException  InvalidArgumentException
+     */
+    public function it_throws_an_exception_if_search_type_not_provided()
+    {
+        $finder = new SpotifyFinder;
+
+        $music = new MusicInfo;
+        $music->fill([
+            'artist' => 'noone',
+            'title' => 'nothinghere',
+        ]);
+
+        $finder->search($music);
+    }
 }
