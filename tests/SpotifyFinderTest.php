@@ -1,9 +1,11 @@
 <?php
 
+use App\MusicInfo;
 use App\SpotifyFinder;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Symfony\Component\Finder\Finder;
 
 class SpotifyFinderTest extends TestCase
 {
@@ -75,5 +77,43 @@ class SpotifyFinderTest extends TestCase
 
         $info = $finder->music_info_by_id('album', 'doesnotexist');
         $this->assertNull($info);
+    }
+
+    /**
+     * @test
+     */
+    public function it_searches_for_a_resource_given_a_name_or_artist()
+    {
+        $finder = new SpotifyFinder;
+
+        $music = new MusicInfo;
+        $music->fill([
+            'artist' => 'Tobacco',
+            'title' => 'Stretch Your Face',
+            'type' => 'track',
+        ]);
+
+        $result = $finder->search($music);
+
+        $this->assertInstanceOf('\App\MusicInfo', $result);
+        $this->assertEquals('7H7T22yvZMLVzJHDONDYDp', $result->id);
+        $this->assertEquals('Stretch Your Face', $result->title);
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_null_if_resource_is_not_found()
+    {
+        $finder = new SpotifyFinder;
+
+        $music = new MusicInfo;
+        $music->fill([
+            'artist' => 'noone',
+            'title' => 'nothingishere',
+            'type' => 'track',
+        ]);
+
+        $this->assertNull($finder->search($music));
     }
 }

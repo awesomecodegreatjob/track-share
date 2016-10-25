@@ -159,13 +159,14 @@ class SpotifyFinder
     }
 
     /**
-     * Take in a MusicInfo instance and find the resource ID
+     * Take in a MusicInfo instance and find the resource ID. Returns null if
+     * resource isn't found.
      *
-     * @param  MusicInfo  $info
+     * @param  MusicInfo  $info  Must have artist, title and type properties set
      *
-     * @return \App\MusicInfo
+     * @return \App\MusicInfo|null
      */
-    public function search($info)
+    public function search(MusicInfo $info)
     {
         $artist = str_replace(' ', '+', $info->artist);
         $title = str_replace(' ', '+', $info->title);
@@ -178,11 +179,14 @@ class SpotifyFinder
 
         $response = CurlHelper::factory($uri)->exec();
 
-        // $music_data represents the returned music infomation.
+        // $music_data represents the returned music information.
         // @see: https://developer.spotify.com/web-api/search-item/
         $music_data = array_get($response, 'data.'.$info->type.'s.items.0');
 
         $music_id = array_get($music_data, 'id');
+
+        // if a music ID isn't set, return early
+        if(null === $music_id) return null;
 
         $music_info = new MusicInfo;
         if($info->type == 'album')
