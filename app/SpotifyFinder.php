@@ -6,6 +6,13 @@ use CurlHelper;
 
 class SpotifyFinder
 {
+    /**
+     * Validates Spotify urls
+     *
+     * @param  string  $uri
+     *
+     * @return  bool
+     */
     public function matches($uri)
     {
         return strpos($uri, 'open.spotify.com') !== false
@@ -13,6 +20,14 @@ class SpotifyFinder
             || strpos($uri, 'spotify:track') !== false;
     }
 
+    /**
+     * Takes a Spotify resource URI and returns the resource type and ID, or
+     * false if the URI is not valid.
+     *
+     * @param  string  $uri
+     *
+     * @return  string[ resource type, resource id ]|false
+     */
     public function music_id($uri)
     {
         $is_match = preg_match("/\/\/open\.spotify\.com\/(album|track)\/(\w+)/", $uri, $matches);
