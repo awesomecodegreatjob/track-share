@@ -2,9 +2,10 @@
 
 namespace App;
 
+use app\Contracts\MusicService;
 use CurlHelper;
 
-class SpotifyFinder
+class SpotifyFinder implements MusicService
 {
     /**
      * Validates Spotify urls
