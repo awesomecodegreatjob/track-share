@@ -3,15 +3,31 @@
 namespace App;
 
 use CurlHelper;
+use App\Contracts\MusicService;
 use Symfony\Component\DomCrawler\Crawler;
 
-class GoogleMusicFinder
+class GoogleMusicFinder implements MusicService
 {
+    /**
+     * Validates Google Music service URIs
+     *
+     * @param  string  $uri
+     *
+     * @return  bool
+     */
     public function matches($uri)
     {
         return strpos($uri, 'play.google.com') !== false;
     }
 
+    /**
+     * Takes a resource URI and returns the resource type and ID, or
+     * false if the URI is not valid.
+     *
+     * @param  string  $uri
+     *
+     * @return  string[ resource type, resource id ]|bool
+     */
     public function music_id($uri)
     {
         $is_match = preg_match("/play.google.com\/music\/m\/(\w+)/", $uri, $matches);
@@ -21,11 +37,13 @@ class GoogleMusicFinder
         }
 
         if($is_match === 1) {
-            return $matches[1];
+            return ['track', $matches[1]];
         }
+
+        return false;
     }
 
-    public function music_info_by_id($id)
+    public function music_info_by_id($type, $id)
     {
         $info = new MusicInfo;
 
@@ -53,7 +71,7 @@ class GoogleMusicFinder
         }
     }
 
-    public function search($info)
+    public function search(MusicInfo $info)
     {
         $key_terms = [];
         $key_terms = array_merge($key_terms, explode(' ', $info->artist));
