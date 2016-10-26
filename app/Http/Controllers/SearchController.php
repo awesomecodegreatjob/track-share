@@ -47,14 +47,11 @@ class SearchController extends Controller
 
             $spotify_info = $this->spotify_service->search($google_info);
 
-            // temp image fix
-            $google_info->image_link = $spotify_info->image_link;
-
             $rendered_result = view('action.search.search', [
                 'agent'        => 'Google',
                 'info'         => $google_info,
                 'google_link'  => $google_info->link,
-                'spotify_link' => $spotify_info->link,
+                'spotify_link' => (null === $spotify_info ? null : $spotify_info->link),
             ]);
 
             Cache::put('google_'.$id, $rendered_result->render(), 10080);
