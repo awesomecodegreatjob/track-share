@@ -32,7 +32,7 @@ class SearchController extends Controller
         if($this->gmusic_service->matches($url)) {
             $google_track_data = $this->gmusic_service->music_id($url);
 
-            return redirect('google/' . $google_track_data);
+            return redirect('google/' . $google_track_data[1]);
         } else if($this->spotify_service->matches($url)) {
             $spotify_track_data = $this->spotify_service->music_id($url);
 
@@ -43,7 +43,7 @@ class SearchController extends Controller
     public function google($id)
     {
         return Cache::get('google_'.$id, function() use ($id) {
-            $google_info = $this->gmusic_service->music_info_by_id($id);
+            $google_info = $this->gmusic_service->music_info_by_id('track', $id);
 
             $spotify_info = $this->spotify_service->search($google_info);
 
