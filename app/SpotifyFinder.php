@@ -2,8 +2,8 @@
 
 namespace App;
 
-use app\Contracts\MusicService;
 use CurlHelper;
+use App\Contracts\MusicService;
 
 class SpotifyFinder implements MusicService
 {

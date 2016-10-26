@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Contracts;
+namespace App\Contracts;
 
 use App\MusicInfo;
 
