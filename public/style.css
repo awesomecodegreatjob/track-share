@@ -1,0 +1,47 @@
+
+
+body {
+    margin: 0;
+    padding: 2em;
+}
+
+.back-button {
+    display: block;
+    max-width: 600px;
+    text-align: left;
+    margin: 0 auto 1em;
+}
+
+.image_link {
+    max-width: 600px;
+    margin: 0 auto;
+    display: block;
+    width: 100%;
+}
+
+
+.link-share-button {
+    width: 100%;
+}
+
+@media all and (min-width: 640px){
+    .link-share-button {
+        width: auto;
+    }
+}
+
+.google {
+    background: #FF6226
+}
+
+.google:hover {
+    background: #E9530A;
+}
+
+.spotify {
+    background: #02BB4F;
+}
+
+.spotify:hover {
+    background: #00B240;
+}
