@@ -3,6 +3,7 @@
 $bungee: 'Bungee Inline', cursive;
 $montserrat: 'Montserrat', sans-serif;
 $oswald: 'Oswald', sans-serif;
+$permanent: 'Permanent Marker', cursive;
 
 html {
   box-sizing: border-box;
@@ -13,14 +14,14 @@ html {
 
 body {
 	margin: 0;
-	background: #D6D6D6;
+	background: #004359;
 }
 
 header {
-	background: #8C292F;
+	border-bottom: 1em solid #FF7400;
 	padding: 1em;
 	h1 {
-		font-family: $bungee;
+		font-family: $permanent;
 		color: #FFFFFF;
 		text-align: center;
 		margin: 0;
@@ -76,7 +77,7 @@ footer {
 }
 
 .google {
-    background: #FF6226
+    background: #FF6226;
 }
 
 .google:hover {

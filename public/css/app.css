@@ -6,13 +6,13 @@ html {
 
 body {
   margin: 0;
-  background: #D6D6D6; }
+  background: #004359; }
 
 header {
-  background: #8C292F;
+  border-bottom: 1em solid #FF7400;
   padding: 1em; }
   header h1 {
-    font-family: "Bungee Inline", cursive;
+    font-family: "Permanent Marker", cursive;
     color: #FFFFFF;
     text-align: center;
     margin: 0;

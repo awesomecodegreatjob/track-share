@@ -8,7 +8,7 @@
 
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/normalize.min.css">
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/foundation.min.css">
-     <link href="https://fonts.googleapis.com/css?family=Bungee+Inline|Montserrat|Oswald" rel="stylesheet">
+     <link href="https://fonts.googleapis.com/css?family=Permanent+Marker" rel="stylesheet">
      <link rel="stylesheet" href="/style.css" media="screen" charset="utf-8">
      <link rel="stylesheet" href="/css/app.css" media="screen" charset="utf-8">
      <link rel="stylesheet" href="/fontello.css" media="screen" charset="utf-8">
