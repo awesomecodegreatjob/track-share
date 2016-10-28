@@ -132,11 +132,19 @@ class GoogleMusicFinder implements MusicService
         return $info;
     }
 
+    /**
+     * @param $id
+     * @return array
+     */
     protected function fetchMusicInfo($id)
     {
         $uri = sprintf("https://play.google.com/music/preview/%s", $id);
 
-        $response = CurlHelper::factory($uri)->exec();
+        $response = CurlHelper::factory($uri)
+            ->setGetParams([
+                'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
+            ])
+            ->exec();
 
         $response_body = $response['content'];
 
@@ -144,9 +152,10 @@ class GoogleMusicFinder implements MusicService
         $crawler = new Crawler($response_body);
         $search_result = $crawler->filter('#main-content-container');
 
+
         // Get image link
-        $el_image = $crawler->filter('.album-art');
-        $image = $el_image->attr('src');
+        $attrib_image = $crawler->filterXpath("//meta[@property='og:image']")->extract(['content']);
+        $image = head($attrib_image);
 
         $image = $this->cleanseImageUrl($image);
 
@@ -158,9 +167,8 @@ class GoogleMusicFinder implements MusicService
         $el_artist = $search_result->filter('.album-artist > a');
         $artist = $el_artist->text();
 
-
         // Get Album/Track from tracklist title
-        $el_tracklist_title = $search_result->filter('.tracklist-info-text > .title');
+        $el_tracklist_title = $search_result->filter('.info-text > .title > a');
         $tracklist_title = $el_tracklist_title->text();
 
         if(strpos($tracklist_title, 'From the album') !== false)

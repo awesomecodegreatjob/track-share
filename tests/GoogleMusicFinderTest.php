@@ -38,4 +38,21 @@ class GoogleMusicFinderTest extends TestCase
 
         $this->assertFalse($finder->music_id('https://open.spotify.com/album/1M1dhwZE65bqGfbUdMzvlj'));
     }
+
+    /**
+     * @test
+     */
+    public function it_gets_music_information_by_resource_type_and_id() {
+        $finder = new GoogleMusicFinder;
+
+        $resource = $finder->music_id($this->music_uri_1);
+        $info = $finder->music_info_by_id($resource[0], $resource[1]);
+
+        $this->assertEquals($resource[1], $info->id);
+        $this->assertEquals('Everything In Its Right Place', $info->title);
+        $this->assertEquals('Radiohead', $info->artist);
+        $this->assertInternalType('string', $info->image_link);
+        $this->assertInternalType('string', $info->link);
+        $this->assertEquals('album', $info->type);
+    }
 }
