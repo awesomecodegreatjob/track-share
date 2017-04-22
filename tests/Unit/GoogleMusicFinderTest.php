@@ -1,5 +1,8 @@
 <?php
 
+namespace Test\Unit;
+
+use Test\TestCase;
 use App\GoogleMusicFinder;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -10,9 +13,7 @@ class GoogleMusicFinderTest extends TestCase
     protected $music_uri_1 = 'https://play.google.com/music/m/Toknxdtl3kx7askzrt7byiusbdm?t=Everything_in_Its_Right_Place_-_Radiohead';
     protected $music_uri_2 = 'https://play.google.com/music/m/B5c5kftiwy4a3zind5r4ip6uepm?t=II_-_Unknown_Mortal_Orchestra';
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_validates_resource_URIs()
     {
         $finder = new GoogleMusicFinder;
@@ -23,9 +24,7 @@ class GoogleMusicFinderTest extends TestCase
         $this->assertFalse($finder->matches('https://open.spotify.com/album/1M1dhwZE65bqGfbUdMzvlj'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_extracts_a_resource_id_from_valid_URIs()
     {
         $finder = new GoogleMusicFinder;
@@ -39,9 +38,7 @@ class GoogleMusicFinderTest extends TestCase
         $this->assertFalse($finder->music_id('https://open.spotify.com/album/1M1dhwZE65bqGfbUdMzvlj'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_gets_music_information_by_resource_type_and_id() {
         $finder = new GoogleMusicFinder;
 

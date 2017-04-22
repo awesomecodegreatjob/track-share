@@ -1,11 +1,14 @@
 <?php
 
+namespace Test\Unit;
+
 use App\MusicInfo;
+use Test\TestCase;
 use App\SpotifyFinder;
+use InvalidArgumentException;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Symfony\Component\Finder\Finder;
 
 class SpotifyFinderTest extends TestCase
 {
@@ -15,9 +18,7 @@ class SpotifyFinderTest extends TestCase
     // Mellow Gold by Beck
     protected $music_uri_2 = 'https://open.spotify.com/album/1M1dhwZE65bqGfbUdMzvlj';
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_validates_resource_URIs()
     {
         $finder = new SpotifyFinder;
@@ -28,9 +29,7 @@ class SpotifyFinderTest extends TestCase
         $this->assertFalse($finder->matches('https://play.google.com/music/m/Tpwsuxmzwi2x7se2jdmtwmxnc3q'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_extracts_a_resource_id_from_valid_URIs()
     {
         $finder = new SpotifyFinder;
@@ -44,9 +43,7 @@ class SpotifyFinderTest extends TestCase
         $this->assertFalse($finder->music_id('https://play.google.com/music/m/Tpwsuxmzwi2x7se2jdmtwmxnc3q'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_gets_music_information_by_resource_type_and_id()
     {
         $finder = new SpotifyFinder;
@@ -79,9 +76,7 @@ class SpotifyFinderTest extends TestCase
         $this->assertNull($info);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_searches_for_a_resource_given_a_name_or_artist()
     {
         $finder = new SpotifyFinder;
@@ -100,9 +95,7 @@ class SpotifyFinderTest extends TestCase
         $this->assertEquals('Stretch Your Face', $result->title);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_returns_null_if_resource_is_not_found()
     {
         $finder = new SpotifyFinder;
