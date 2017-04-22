@@ -29,16 +29,16 @@
     </div>
     <br/>
     <div class="row">
-        <div class="medium-6 small-12 columns text-right">
+        <div class="small-12 medium-5 medium-offset-1 large-4 large-offset-2 columns text-right">
             @if($google_link)
-                <a class="button google small link-share-button" href="{{ $google_link }}" target="_blank">Listen on Google&nbsp;Music&nbsp;<i class="icon-gmusic"></i></a>
+                <a class="button google expand link-share-button" href="{{ $google_link }}" target="_blank">Listen on Google&nbsp;Music&nbsp;<i class="icon-gmusic"></i></a>
             @else
                 <a class="button google small link-share-button disabled" target="_blank">Listen on Google&nbsp;Music&nbsp;<i class="icon-gmusic"></i></a>
             @endif
         </div>
-        <div class="medium-6 small-12 columns">
+        <div class="small-12 medium-5 large-4 columns end">
             @if($spotify_link)
-                <a class="button spotify small link-share-button" href="{{ $spotify_link }}" target="_blank">Listen on Spotify&nbsp;<i class="icon-spotify"></i></a>
+                <a class="button spotify expand link-share-button" href="{{ $spotify_link }}" target="_blank">Listen on Spotify&nbsp;<i class="icon-spotify"></i></a>
             @else
                 <a class="button spotify small link-share-button disabled" target="_blank">Not available on Spotify</a>
             @endif
