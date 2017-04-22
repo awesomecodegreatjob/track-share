@@ -8,8 +8,10 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
         "mervick/curl-helper": "^1.1",
-       "symfony/dom-crawler": "^2.7",
-       "symfony/css-selector": "^2.7"
+        "symfony/dom-crawler": "^2.7",
+        "symfony/css-selector": "^2.7",
+        "rollbar/rollbar": "~0.18.2",
+        "jenssegers/rollbar": "^1.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
