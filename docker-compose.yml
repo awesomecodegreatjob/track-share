@@ -1,0 +1,23 @@
+web:
+  image: brococg/php_apache:php5.6
+  container_name: track_share_web
+  ports:
+    - "8080:80"
+  volumes:
+    - .:/var/www/html
+    - ./docker/config/virtualhost.conf:/etc/apache2/sites-available/000-default.conf
+    - ~/.ssh:/root/.ssh
+  links:
+    - db
+db:
+  image: mysql:5.6
+  container_name: track_share_db
+  ports:
+    - "3307:3306"
+  volumes:
+    - ./docker/storage/mysql:/var/lib/mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: 123456
+    MYSQL_USER: dev
+    MYSQL_PASSWORD: 123456
+    MYSQL_DATABASE: track_share
