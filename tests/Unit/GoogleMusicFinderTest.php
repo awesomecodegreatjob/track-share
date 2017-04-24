@@ -13,6 +13,9 @@ class GoogleMusicFinderTest extends TestCase
     protected $music_uri_1 = 'https://play.google.com/music/m/Toknxdtl3kx7askzrt7byiusbdm?t=Everything_in_Its_Right_Place_-_Radiohead';
     protected $music_uri_2 = 'https://play.google.com/music/m/B5c5kftiwy4a3zind5r4ip6uepm?t=II_-_Unknown_Mortal_Orchestra';
 
+    // Problems
+    protected $problem1 = 'https://play.google.com/music/m/Atxifkhyporotholngkhu6irlra?t=Mimicking_Birds';
+
     /** @test */
     public function it_validates_resource_URIs()
     {
@@ -64,5 +67,8 @@ class GoogleMusicFinderTest extends TestCase
         $this->assertInternalType('string', $info->image_link);
         $this->assertInternalType('string', $info->link);
         $this->assertEquals('album', $info->type);
+
+        $info = $finder->music_info_by_id('album', 'Blymcq6c7hwxpt5whoernti6nma');
+        $this->assertEquals('Mimicking Birds', $info->artist);
     }
 }

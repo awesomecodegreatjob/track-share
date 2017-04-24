@@ -2,6 +2,7 @@
 
 namespace Test;
 
+use App\Music;
 use Exception;
 use App\Exceptions\Handler;
 
@@ -37,5 +38,19 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
                 throw $e;
             }
         });
+    }
+
+    /**
+     * Retrieve last created Music record. Returns null if no Music exists.
+     *
+     * @return Music|null
+     */
+    protected function getLastMusic()
+    {
+        $last = last(Music::all());
+        if($last)
+            return $last[0];
+        else
+            return null;
     }
 }

@@ -29,18 +29,4 @@ class MusicShareTest extends TestCase
         $this->see('Floating Coffin');
         $this->see('Thee Oh Sees');
     }
-
-    /**
-     * Retrieve last created Music record. Returns null if no Music exists.
-     *
-     * @return Music|null
-     */
-    protected function getLastMusic()
-    {
-        $last = last(Music::all());
-        if($last)
-            return $last[0];
-        else
-            return null;
-    }
 }
