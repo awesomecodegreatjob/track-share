@@ -6,6 +6,8 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    @yield('meta_info')
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/normalize.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/foundation.min.css">
     <link rel="stylesheet" href="{{ asset('/style.css') }}">

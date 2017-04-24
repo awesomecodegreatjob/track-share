@@ -6,10 +6,20 @@
 @extends('templates.main')
 
 @if($music->track)
-    @section('title', $music->track . ' by ' . $music->artist)
+    @section('title', $music->track . ' by ' . $music->band)
 @else
-    @section('title', $music->album . ' by ' . $music->artist)
+    @section('title', $music->album . ' by ' . $music->band)
 @endif
+
+@section('meta_info')
+    @if($music->track)
+        <meta property="og:title" content="{{ $music->track }} by {{ $music->band }}">
+    @else
+        <meta property="og:title" content="{{ $music->album }} by {{ $music->band }}">
+    @endif
+    <meta property="og:description" content="Share your music with all of your friends">
+    <meta property="og:image" content="{{ $music->image_url }}">
+@endsection
 
 @section('body')
     <div class="row">
