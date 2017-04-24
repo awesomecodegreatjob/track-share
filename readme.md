@@ -10,7 +10,9 @@ Built using [Laravel 5.1](https://laravel.com/docs/5.1)
 3. `composer install`
 4. `cp .env.example .env`
 5. `php artisan key:generate`
-6. `php artisan serve`
+6. Open .env, config database settings
+7. `php artisan migrate`
+8. `php artisan serve`
 
 ### Local Development Setup
 
@@ -22,6 +24,8 @@ To install using Docker:
 3. `composer install`
 4. `cp .env.example .env`
 5. `php artisan key:generate`
+6. Open .env, set `DB_CONNECTION` to "docker_mysql"
+7. `php artisan migrate`
 
 This will leave you with a Bash session in the web directory.
 
