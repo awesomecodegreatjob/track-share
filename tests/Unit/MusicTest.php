@@ -44,4 +44,17 @@ class MusicTest extends TestCase
 
         $this->assertEquals(Music::KEY_LENGTH, strlen($music->key));
     }
+
+    /** @test */
+    public function itRedirectsToExistingMusicLinksIfAvailable()
+    {
+        $url = 'spotify:track:3UyT5e1tk3WVVsWBSm9i8L';
+        $music = Music::createFromUrl($url);
+
+        $existing_key = $music->key;
+
+        $music = Music::createFromUrl($url);
+
+        $this->assertEquals($existing_key, $music->key, 'Failed to use existing music key');
+    }
 }
