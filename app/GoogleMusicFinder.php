@@ -3,6 +3,7 @@
 namespace App;
 
 use CurlHelper;
+use InvalidArgumentException;
 use App\Contracts\MusicService;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -75,7 +76,13 @@ class GoogleMusicFinder implements MusicService
     {
         $key_terms = [];
         $key_terms = array_merge($key_terms, explode(' ', $info->artist));
-        $key_terms = array_merge($key_terms, explode(' ', $info->title));
+        $key_terms = array_merge($key_terms, explode(' ', $info->album));
+
+        if($info->track) {
+            $key_terms = array_merge($key_terms, explode(' ', $info->track));
+        } else {
+            array_push($key_terms, 'album');
+        }
 
         $uri = sprintf('https://play.google.com/store/search?q=%s&c=music', implode('%20', $key_terms));
 
@@ -99,7 +106,7 @@ class GoogleMusicFinder implements MusicService
 
         // Get Title
         $el_title = $search_result->filter('a.title');
-        $title = $el_title->attr('title');
+        $album = $el_title->attr('title');
 
         // Get Artist
         $el_artist = $search_result->filter('a.subtitle');
@@ -113,16 +120,14 @@ class GoogleMusicFinder implements MusicService
 
         $id = $music_info[1];
 
-        $link = sprintf('https://play.google.com/music/m/%s?t=%s_-_%s',
-            $id,
-            str_replace(' ', '_', $title),
-            str_replace(' ', '_', $artist));
+        $link = sprintf('https://play.google.com/music/m/%s', $id);
 
         $info = new MusicInfo;
 
         $info->fill([
             'id' => $music_info[1],
-            'title' => $title,
+            'album' => $album,
+            'track' => $album,
             'artist' => $artist,
             'type' => $music_type,
             'link' => $link,
@@ -150,44 +155,30 @@ class GoogleMusicFinder implements MusicService
 
         // Initialize crawler
         $crawler = new Crawler($response_body);
-        $search_result = $crawler->filter('#main-content-container');
 
+        try {
+            $track = $crawler->filter('body > [itemscope][itemtype="http://schema.org/MusicRecording/PlayMusicTrack"] > [itemprop="name"]')->text();
+            $artist = $crawler->filter('body > [itemscope][itemtype="http://schema.org/MusicRecording/PlayMusicTrack"] [itemprop="byArtist"]')->text();
+            $album = $crawler->filter('body > [itemscope][itemtype="http://schema.org/MusicRecording/PlayMusicTrack"] [itemprop="inAlbum"]')->text();
+            $image = $crawler->filter('body > [itemtype="http://schema.org/MusicRecording/PlayMusicTrack"] [itemprop="image"]')->attr('href');
 
-        // Get image link
-        $attrib_image = $crawler->filterXpath("//meta[@property='og:image']")->extract(['content']);
-        $image = head($attrib_image);
-
-        $image = $this->cleanseImageUrl($image);
-
-        // Get track name
-        $el_track = $search_result->filter('.title > a');
-        $title = $el_track->text();
-
-        // Get artist name
-        $el_artist = $search_result->filter('.album-artist > a');
-        $artist = $el_artist->text();
-
-        // Get Album/Track from tracklist title
-        $el_tracklist_title = $search_result->filter('.info-text > .title > a');
-        $tracklist_title = $el_tracklist_title->text();
-
-        if(strpos($tracklist_title, 'From the album') !== false)
-        {
             $type = 'track';
-        }
-        else
-        {
+        } catch(InvalidArgumentException $e) {
+            // Album was shared
+            $track = null;
+            $album = $crawler->filter('body > [itemtype="http://schema.org/MusicAlbum/PlayMusicAlbum"] [itemprop="name"]')->text();
+            $artist = $crawler->filter('body > [itemtype="http://schema.org/MusicAlbum/PlayMusicAlbum"] [itemprop="byArtist"]')->text();
+            $image = $crawler->filter('body > [itemtype="http://schema.org/MusicAlbum/PlayMusicAlbum"] [itemprop="image"]')->attr('href');
+
             $type = 'album';
         }
 
-        $link = sprintf('https://play.google.com/music/m/%s?t=%s_-_%s',
-            $id,
-            str_replace(' ', '_', $title),
-            str_replace(' ', '_', $artist));
+        $link = sprintf('https://play.google.com/music/m/%s', $id);
 
         return [
             'id' => $id,
-            'title' => $title,
+            'album' => $album,
+            'track' => $track,
             'type' => $type,
             'artist' => $artist,
             'link' => $link,

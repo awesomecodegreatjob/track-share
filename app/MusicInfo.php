@@ -5,7 +5,8 @@ namespace App;
 class MusicInfo
 {
     public $id;
-    public $title;
+    public $album;
+    public $track;
     public $type;
     public $artist;
     public $link;
@@ -14,7 +15,8 @@ class MusicInfo
     public function fill($info)
     {
         $this->id = array_get($info, 'id');
-        $this->title = array_get($info, 'title');
+        $this->album = array_get($info, 'album');
+        $this->track = array_get($info, 'track');
         $this->type = array_get($info, 'type');
         $this->artist = array_get($info, 'artist');
         $this->link = array_get($info, 'link');

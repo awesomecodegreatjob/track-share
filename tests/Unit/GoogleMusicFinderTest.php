@@ -39,15 +39,28 @@ class GoogleMusicFinderTest extends TestCase
     }
 
     /** @test */
-    public function it_gets_music_information_by_resource_type_and_id() {
+    public function itGetsTrackInfoById() {
         $finder = new GoogleMusicFinder;
 
-        $resource = $finder->music_id($this->music_uri_1);
-        $info = $finder->music_info_by_id($resource[0], $resource[1]);
+        $info = $finder->music_info_by_id('track', 'Toknxdtl3kx7askzrt7byiusbdm');
 
-        $this->assertEquals($resource[1], $info->id);
-        $this->assertEquals('Everything In Its Right Place', $info->title);
+        $this->assertEquals('Everything In Its Right Place', $info->track);
         $this->assertEquals('Radiohead', $info->artist);
+        $this->assertEquals('Kid A', $info->album);
+        $this->assertInternalType('string', $info->image_link);
+        $this->assertInternalType('string', $info->link);
+        $this->assertEquals('track', $info->type);
+    }
+
+    /** @test */
+    public function itGetsAlbumInfoById() {
+        $finder = new GoogleMusicFinder;
+
+        $info = $finder->music_info_by_id('album', 'B5c5kftiwy4a3zind5r4ip6uepm');
+
+        $this->assertEquals(null, $info->track);
+        $this->assertEquals('Unknown Mortal Orchestra', $info->artist);
+        $this->assertEquals('II', $info->album);
         $this->assertInternalType('string', $info->image_link);
         $this->assertInternalType('string', $info->link);
         $this->assertEquals('album', $info->type);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Music;
 use Cache;
 use App\GoogleMusicFinder;
 use App\SpotifyFinder;
@@ -22,22 +23,23 @@ class SearchController extends Controller
         $this->spotify_service = new SpotifyFinder;
     }
 
+    /**
+     * Take a music share URL and redirect to a shareable music page.
+     *
+     * HTTP Params:
+     *  - {string} url - The music share URL
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function search(Request $request)
     {
         $url = $request->input('url');
 
-        $agent = null;
-        $music_info = null;
+        $music = Music::createFromUrl($url);
 
-        if($this->gmusic_service->matches($url)) {
-            $google_track_data = $this->gmusic_service->music_id($url);
-
-            return redirect('google/' . $google_track_data[1]);
-        } else if($this->spotify_service->matches($url)) {
-            $spotify_track_data = $this->spotify_service->music_id($url);
-
-            return redirect('spotify/' . $spotify_track_data[0] . '/' . $spotify_track_data[1]);
-        }
+        return redirect('/m/'.$music->key);
     }
 
     public function google($id)

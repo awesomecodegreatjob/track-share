@@ -44,30 +44,41 @@ class SpotifyFinderTest extends TestCase
     }
 
     /** @test */
-    public function it_gets_music_information_by_resource_type_and_id()
+    public function itGetsTrackInfoById()
     {
         $finder = new SpotifyFinder;
 
-        $resource = $finder->music_id($this->music_uri_1);
-        $info = $finder->music_info_by_id($resource[0], $resource[1]);
+        $info = $finder->music_info_by_id('track', '7H7T22yvZMLVzJHDONDYDp');
 
-        $this->assertEquals($resource[1], $info->id);
-        $this->assertEquals('Stretch Your Face', $info->title);
+        $this->assertEquals('7H7T22yvZMLVzJHDONDYDp', $info->id);
+        $this->assertEquals('Stretch Your Face', $info->track);
+        $this->assertEquals('Maniac Meat', $info->album);
         $this->assertEquals('Tobacco', $info->artist);
         $this->assertInternalType('string', $info->image_link);
-        $this->assertEquals('https://open.spotify.com/track/' . $resource[1], $info->link);
-        $this->assertEquals($resource[0], $info->type);
+        $this->assertEquals('https://open.spotify.com/track/7H7T22yvZMLVzJHDONDYDp', $info->link);
+        $this->assertEquals('track', $info->type);
+    }
 
+    /** @test */
+    public function itGetsAlbumInfoById()
+    {
+        $finder = new SpotifyFinder;
 
-        $resource = $finder->music_id($this->music_uri_2);
-        $info = $finder->music_info_by_id($resource[0], $resource[1]);
+        $info = $finder->music_info_by_id('album', '1M1dhwZE65bqGfbUdMzvlj');
 
-        $this->assertEquals($resource[1], $info->id);
-        $this->assertEquals('Mellow Gold', $info->title);
+        $this->assertEquals('1M1dhwZE65bqGfbUdMzvlj', $info->id);
+        $this->assertEquals('Mellow Gold', $info->album);
+        $this->assertEquals(null, $info->track);
         $this->assertEquals('Beck', $info->artist);
         $this->assertInternalType('string', $info->image_link);
-        $this->assertEquals('https://open.spotify.com/album/' . $resource[1], $info->link);
-        $this->assertEquals($resource[0], $info->type);
+        $this->assertEquals('https://open.spotify.com/album/1M1dhwZE65bqGfbUdMzvlj', $info->link);
+        $this->assertEquals('album', $info->type);
+    }
+
+    /** @test */
+    public function itHandlesResourcesThatDoNotExist()
+    {
+        $finder = new SpotifyFinder;
 
         $info = $finder->music_info_by_id('track', 'doesnotexist');
         $this->assertNull($info);
@@ -84,7 +95,7 @@ class SpotifyFinderTest extends TestCase
         $music = new MusicInfo;
         $music->fill([
             'artist' => 'Tobacco',
-            'title' => 'Stretch Your Face',
+            'track' => 'Stretch Your Face',
             'type' => 'track',
         ]);
 
@@ -92,7 +103,7 @@ class SpotifyFinderTest extends TestCase
 
         $this->assertInstanceOf('\App\MusicInfo', $result);
         $this->assertEquals('7H7T22yvZMLVzJHDONDYDp', $result->id);
-        $this->assertEquals('Stretch Your Face', $result->title);
+        $this->assertEquals('Stretch Your Face', $result->track);
     }
 
     /** @test */
@@ -103,7 +114,7 @@ class SpotifyFinderTest extends TestCase
         $music = new MusicInfo;
         $music->fill([
             'artist' => 'noone',
-            'title' => 'nothingishere',
+            'track' => 'nothingishere',
             'type' => 'track',
         ]);
 

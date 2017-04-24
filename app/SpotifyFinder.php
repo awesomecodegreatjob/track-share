@@ -122,7 +122,8 @@ class SpotifyFinder implements MusicService
 
         return [
             'id' => array_get($album_data, 'id'),
-            'title' => array_get($album_data, 'name'),
+            'album' => array_get($album_data, 'name'),
+            'track' => null,
             'type' => 'album',
             'artist' => array_get($album_data, 'artists.0.name'),
             'link' => array_get($album_data, 'external_urls.spotify'),
@@ -151,7 +152,8 @@ class SpotifyFinder implements MusicService
 
         return [
             'id' => array_get($track_data, 'id'),
-            'title' => array_get($track_data, 'name'),
+            'album' => array_get($track_data, 'album.name'),
+            'track' => array_get($track_data, 'name'),
             'type' => 'track',
             'artist' => array_get($track_data, 'artists.0.name'),
             'link' => array_get($track_data, 'external_urls.spotify'),
@@ -169,16 +171,21 @@ class SpotifyFinder implements MusicService
      */
     public function search(MusicInfo $info)
     {
-        if(
-            null === $info->title
-               || null === $info->artist
-               || null === $info->type
-          ) {
+        if((null === $info->track && null === $info->album)
+           || null === $info->artist
+           || null === $info->type)
+        {
             throw new \InvalidArgumentException('Required search criteria not provided');
         }
 
+        $share_title = null;
+        if($info->track)
+            $share_title = $info->track;
+        else
+            $share_title = $info->album;
+
         $artist = str_replace(' ', '+', $info->artist);
-        $title = str_replace(' ', '+', $info->title);
+        $title = str_replace(' ', '+', $share_title);
 
         $uri = sprintf("https://api.spotify.com/v1/search?q=artist:%s%%20%s:%s&type=%s&limit=1",
             $artist,
@@ -199,13 +206,9 @@ class SpotifyFinder implements MusicService
 
         $music_info = new MusicInfo;
         if($info->type == 'album')
-        {
             $music_info->fill($this->fetchAlbumInfo($music_id));
-        }
         else
-        {
             $music_info->fill($this->fetchTrackInfo($music_id));
-        }
 
         return $music_info;
     }

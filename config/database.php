@@ -52,6 +52,12 @@ return [
             'prefix'   => '',
         ],
 
+        'memory' => [
+            'driver'   => 'sqlite',
+            'database' => ':memory:',
+            'prefix'   => '',
+        ],
+
         'mysql' => [
             'driver'    => 'mysql',
             'host'      => env('DB_HOST', 'localhost'),
@@ -62,6 +68,20 @@ return [
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
             'strict'    => false,
+        ],
+
+        'docker_mysql' => [
+            'driver' => 'mysql',
+            'host' => env('TRACK_SHARE_DB_PORT_3306_TCP_ADDR', 'localhost'),
+            'port' => env('TRACK_SHARE_DB_PORT_3306_TCP_PORT', '3306'),
+            'database' => env('TRACK_SHARE_DB_ENV_MYSQL_DATABASE', 'track_share'),
+            'username' => env('TRACK_SHARE_DB_ENV_MYSQL_USER', 'dev'),
+            'password' => env('TRACK_SHARE_DB_ENV_MYSQL_PASSWORD', '123456'),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
         ],
 
         'pgsql' => [

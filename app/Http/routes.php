@@ -15,6 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/m/{id}', 'MusicController@show');
 Route::get('search', 'SearchController@search');
 Route::get('google/{id}', 'SearchController@google');
 Route::get('spotify/{type}/{id}', 'SearchController@spotify');
