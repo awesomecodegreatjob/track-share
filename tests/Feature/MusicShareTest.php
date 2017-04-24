@@ -29,4 +29,11 @@ class MusicShareTest extends TestCase
         $this->see('Floating Coffin');
         $this->see('Thee Oh Sees');
     }
+
+    /** @test */
+    public function itReturnsA404IfMusicLinkDoesNotExist()
+    {
+        $this->call('get', '/m/not-here');
+        $this->assertResponseStatus(404);
+    }
 }

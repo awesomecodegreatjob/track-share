@@ -12,9 +12,11 @@ class MusicController extends Controller
 {
     public function show($key)
     {
-        $music = Music::getByKey($key);
-        return view('actions.music.show', [
-            'music' => $music,
-        ]);
+        if($music = Music::getByKey($key))
+            return view('actions.music.show', [
+                'music' => $music,
+            ]);
+        else
+            return abort(404, 'Requested music link not found');
     }
 }
