@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Spotify\Client\ServiceConnection;
+use App\Spotify\Contracts\ApiConnection;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(ApiConnection::class, function () {
+            return new ServiceConnection;
+        });
     }
 }

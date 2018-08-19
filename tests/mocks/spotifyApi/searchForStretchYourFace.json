@@ -1,0 +1,88 @@
+{
+  "tracks": {
+    "href": "https://api.spotify.com/v1/search?query=Stretch+Your+Face&type=track&market=US&offset=0&limit=1",
+    "items": [
+      {
+        "album": {
+          "album_type": "album",
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/3ikKyCOrsMeANi0d5u8BCR"
+              },
+              "href": "https://api.spotify.com/v1/artists/3ikKyCOrsMeANi0d5u8BCR",
+              "id": "3ikKyCOrsMeANi0d5u8BCR",
+              "name": "Tobacco",
+              "type": "artist",
+              "uri": "spotify:artist:3ikKyCOrsMeANi0d5u8BCR"
+            }
+          ],
+          "external_urls": {
+            "spotify": "https://open.spotify.com/album/4SOxWpta4wsKaj2wWpwHbC"
+          },
+          "href": "https://api.spotify.com/v1/albums/4SOxWpta4wsKaj2wWpwHbC",
+          "id": "4SOxWpta4wsKaj2wWpwHbC",
+          "images": [
+            {
+              "height": 640,
+              "url": "https://i.scdn.co/image/195566f205735d9243c3355e0e80eabcd4d234e2",
+              "width": 640
+            },
+            {
+              "height": 300,
+              "url": "https://i.scdn.co/image/bfd03171f321a2e81ce7191703b8a1eefa7642c9",
+              "width": 300
+            },
+            {
+              "height": 64,
+              "url": "https://i.scdn.co/image/39eac6746669ea8e374a704887bf68a5e6a1cc13",
+              "width": 64
+            }
+          ],
+          "name": "Maniac Meat",
+          "release_date": "2010-05-25",
+          "release_date_precision": "day",
+          "total_tracks": 16,
+          "type": "album",
+          "uri": "spotify:album:4SOxWpta4wsKaj2wWpwHbC"
+        },
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/3ikKyCOrsMeANi0d5u8BCR"
+            },
+            "href": "https://api.spotify.com/v1/artists/3ikKyCOrsMeANi0d5u8BCR",
+            "id": "3ikKyCOrsMeANi0d5u8BCR",
+            "name": "Tobacco",
+            "type": "artist",
+            "uri": "spotify:artist:3ikKyCOrsMeANi0d5u8BCR"
+          }
+        ],
+        "disc_number": 1,
+        "duration_ms": 165506,
+        "explicit": true,
+        "external_ids": {
+          "isrc": "QMDA71524299"
+        },
+        "external_urls": {
+          "spotify": "https://open.spotify.com/track/7H7T22yvZMLVzJHDONDYDp"
+        },
+        "href": "https://api.spotify.com/v1/tracks/7H7T22yvZMLVzJHDONDYDp",
+        "id": "7H7T22yvZMLVzJHDONDYDp",
+        "is_local": false,
+        "is_playable": true,
+        "name": "Stretch Your Face",
+        "popularity": 35,
+        "preview_url": "https://p.scdn.co/mp3-preview/bee023f8a36e4f9d132ab88ccde5f8240651c2c2?cid=774b29d4f13844c495f206cafdad9c86",
+        "track_number": 15,
+        "type": "track",
+        "uri": "spotify:track:7H7T22yvZMLVzJHDONDYDp"
+      }
+    ],
+    "limit": 1,
+    "next": "https://api.spotify.com/v1/search?query=Stretch+Your+Face&type=track&market=US&offset=1&limit=1",
+    "offset": 0,
+    "previous": null,
+    "total": 7
+  }
+}
