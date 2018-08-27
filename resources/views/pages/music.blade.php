@@ -1,3 +1,9 @@
+{{--
+
+    @var MusicInfo $info
+    @var Collection<MusicInfo> $matches
+
+--}}
 @extends('layouts.main')
 
 @section('body')
@@ -7,14 +13,23 @@
             <a href="/" class="hover:underline pb-4 no-underline text-grey-darker">Share Another</a>
         </header>
         <div class="w-full overflow-hidden bg-white sm:rounded sm:shadow-lg">
-            @if($music = $requestedMusic->resolve())
-            <img class="w-full" src="{{ $music->getImageUrl() }}" alt="Sunset in the mountains">
+            <img class="w-full" src="{{ $info->getImageUrl() }}" alt="Sunset in the mountains">
             <div class="px-6 py-4">
-                <div class="font-bold text-xl mb-2">{{ $music->getTrack() }} by {{ $music->getArtist() }}</div>
+                <div class="font-bold text-xl mb-2">
+                    @if ($info->getType() === 'album')
+                        {{ $info->getAlbum() }} by {{ $info->getArtist() }}
+                    @elseif ($info->getType() === 'track')
+                        {{ $info->getTrack() }} by {{ $info->getArtist() }}
+                    @endif
+                </div>
+                <div class="pt-2 clearfix">
+                    @foreach($matches as $match)
+                    <div class="w-1/2 float-left text-center">
+                        @render('MusicLink', [ 'info' => $match ])
+                    </div>
+                    @endforeach
+                </div>
             </div>
-            @else
-                <p>Song not found</p>
-            @endif
         </div>
     </div>
 @endsection

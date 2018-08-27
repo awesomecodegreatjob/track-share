@@ -15,4 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/search', 'SearchController@html')->name('search');
+Route::get('/search', 'SearchController@html')->name('music.search');
+
+Route::get('/m/{key}', 'MusicLinkController@html')->name('music.link');

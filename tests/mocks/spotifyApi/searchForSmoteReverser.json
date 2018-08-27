@@ -1,0 +1,55 @@
+{
+  "albums": {
+    "href": "https://api.spotify.com/v1/search?query=smote%2Breverser&type=album&market=US&offset=0&limit=1",
+    "items": [
+      {
+        "album_type": "album",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/3qYfqdVwX0fil71onLpLkh"
+            },
+            "href": "https://api.spotify.com/v1/artists/3qYfqdVwX0fil71onLpLkh",
+            "id": "3qYfqdVwX0fil71onLpLkh",
+            "name": "Thee Oh Sees",
+            "type": "artist",
+            "uri": "spotify:artist:3qYfqdVwX0fil71onLpLkh"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/2C3Ra3VEttQOdzf4oYFTbn"
+        },
+        "href": "https://api.spotify.com/v1/albums/2C3Ra3VEttQOdzf4oYFTbn",
+        "id": "2C3Ra3VEttQOdzf4oYFTbn",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/b5f19eeb2b4da6599928bc8885d3c26432af36c0",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ec26444eadef3707d5e6d2e5b127caa7a372e289",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/5fd1c53c3d418b9998763368ea9bcb4e18908758",
+            "width": 64
+          }
+        ],
+        "name": "Smote Reverser",
+        "release_date": "2018-08-17",
+        "release_date_precision": "day",
+        "total_tracks": 11,
+        "type": "album",
+        "uri": "spotify:album:2C3Ra3VEttQOdzf4oYFTbn"
+      }
+    ],
+    "limit": 1,
+    "next": null,
+    "offset": 0,
+    "previous": null,
+    "total": 1
+  }
+}

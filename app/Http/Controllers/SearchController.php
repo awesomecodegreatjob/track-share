@@ -2,23 +2,53 @@
 
 namespace App\Http\Controllers;
 
-use App\SpotifyFinder;
+use App\MusicInfo;
+use App\MusicLink;
+use App\MusicSeed;
+use App\MusicFinder;
+use App\MusicService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class SearchController extends Controller
 {
-    public function html(Request $request, SpotifyFinder $spotify)
+    /** @var MusicFinder */
+    private $music;
+
+    public function __construct(MusicFinder $music)
+    {
+        $this->music = $music;
+    }
+
+    public function html(Request $request)
     {
         $musicUri = $request->get('q', '');
 
-        $seed = $spotify->musicSeedFromUri($musicUri);
+        $musicInfo = $this
+            ->music
+            ->findOriginFor($musicUri)
+            ->map(function (MusicService $s) use ($musicUri) {
+                return $s->musicInfoFromUri($musicUri);
+            })
+            ->getOrElse(null);
 
-        if ($spotify->matches($musicUri)) {
-            return view('pages.music', [
-                'requestedMusic' => $spotify->musicInfoFromSeed($seed),
-            ]);
-        }
+        /** @var Collection $musicInfoCollection */
+        $musicInfoCollection = $musicInfo
+            ->map(function (MusicInfo $i) {
+                return $this->music->collectMatchingInfo($i);
+            })
+            ->getOrElse(collect([]));
 
-        return back();
+        $seeds = $musicInfoCollection
+            ->map(function (MusicInfo $i) {
+                return new MusicSeed($i->getService(), $i->getType(), $i->getId());
+            });
+
+        $link = MusicLink::create([
+            'key' => 'abc',
+            'seeds' => $seeds,
+        ]);
+
+        return redirect()->route('music.link', [ $link->id ]);
     }
 }

@@ -15,3 +15,13 @@ services:
     user: "${UID}:${GID}"
     volumes:
       - .:/code
+
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: track_share
+      MYSQL_USER: track_share
+      MYSQL_PASSWORD: tracksRus

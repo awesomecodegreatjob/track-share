@@ -2,19 +2,20 @@
 
 namespace App;
 
-use App\MusicSeed\MusicSeed;
-use App\Spotify\Client\Result;
-use App\Spotify\Contracts\MusicQuery;
+use PhpSlang\Option\Option;
 use App\Spotify\Contracts\ApiConnection;
-use App\MusicSeed\Result as MusicSeedResult;
 
-class SpotifyFinder
+class SpotifyFinder implements MusicService
 {
     /** @var ApiConnection*/
     private $connection;
 
-    public function __construct(ApiConnection $connection)
+    /** @var string */
+    private $id;
+
+    public function __construct(string $id, ApiConnection $connection)
     {
+        $this->id = $id;
         $this->connection = $connection;
     }
 
@@ -32,18 +33,21 @@ class SpotifyFinder
             || strpos($uri, 'spotify:track') !== false;
     }
 
-    public function musicSeedFromUri(string $uri) : MusicSeedResult
+    /**
+     * @param  string  $uri
+     * @return  Option<MusicInfo>
+     */
+    public function musicInfoFromUri(string $uri) : Option
     {
-        $isMatch = preg_match("/\/\/open\.spotify\.com\/(album|track)\/(\w+)/", $uri, $matches);
-        if (!$isMatch) {
-            $isMatch = preg_match("/spotify:(album|track):(\w+)/", $uri, $matches);
-        }
-
-        if ($isMatch) {
-            return MusicSeed::ok('spotify', $matches[1], $matches[2]);
-        } else {
-            return MusicSeed::error('Invalid music seed.');
-        }
+        return $this
+            ->musicId($uri)
+            ->flatMap(function (array $match) {
+                $seed = new MusicSeed('spotify', $match['type'], $match['id']);
+                return $this->musicInfoFromSeed($seed);
+            })
+            ->map(function (MusicInfo $i) {
+                return $i;
+            });
     }
 
     /**
@@ -52,12 +56,12 @@ class SpotifyFinder
      *
      * @param  string  $uri
      *
-     * @return  string[]|bool
+     * @return  Option<string[]>
      */
-    public function musicId($uri)
+    public function musicId($uri) : Option
     {
         if (!$this->matches($uri)) {
-            return false;
+            return Option::of(null);
         }
 
         $is_match = preg_match("/\/\/open\.spotify\.com\/(album|track)\/(\w+)/", $uri, $matches);
@@ -66,15 +70,20 @@ class SpotifyFinder
         }
 
         if($is_match === 1) {
-            return [$matches[1], $matches[2]];
+            return Option::of([
+                'type' => $matches[1],
+                'id' => $matches[2],
+            ]);
         }
+
+        return Option::of(null);
     }
 
-    public function musicInfoFromSeed(\App\MusicSeed\Result $result)
+    public function musicInfoFromSeed(MusicSeed $seed) : Option
     {
         return $this->musicInfoById(
-            $result->getType(),
-            $result->getId()
+            $seed->getType(),
+            $seed->getId()
         );
     }
 
@@ -84,7 +93,7 @@ class SpotifyFinder
      * @param  string  $type
      * @param  string  $id
      *
-     * @return Result
+     * @return Option
      */
     public function musicInfoById($type, $id)
     {
@@ -94,13 +103,14 @@ class SpotifyFinder
 
                 $responseToMusic = function (array $response) {
                     return MusicInfo::fromArray([
-                        'id' => array_get($response, 'id'),
-                        'album' => array_get($response, 'name'),
+                        'service' => $this->getId(),
+                        'id' => array_get($response, 'id', ''),
+                        'album' => array_get($response, 'name', ''),
                         'track' => '',
                         'type' => 'album',
-                        'artist' => array_get($response, 'artists.0.name'),
-                        'link' => array_get($response, 'external_urls.spotify'),
-                        'image_link' => array_get($response, 'images.0.url'),
+                        'artist' => array_get($response, 'artists.0.name', ''),
+                        'link' => array_get($response, 'external_urls.spotify', ''),
+                        'image_link' => array_get($response, 'images.0.url', ''),
                     ]);
                 };
 
@@ -112,13 +122,14 @@ class SpotifyFinder
 
                 $responseToMusic = function(array $response) {
                     return MusicInfo::fromArray([
-                        'id' => array_get($response, 'id'),
-                        'album' => array_get($response, 'album.name'),
-                        'track' => array_get($response, 'name'),
+                        'service' => $this->getId(),
+                        'id' => array_get($response, 'id', ''),
+                        'album' => array_get($response, 'album.name', ''),
+                        'track' => array_get($response, 'name', ''),
                         'type' => 'track',
-                        'artist' => array_get($response, 'artists.0.name'),
-                        'link' => array_get($response, 'external_urls.spotify'),
-                        'image_link' => array_get($response, 'album.images.0.url'),
+                        'artist' => array_get($response, 'artists.0.name', ''),
+                        'link' => array_get($response, 'external_urls.spotify', ''),
+                        'image_link' => array_get($response, 'album.images.0.url', ''),
                     ]);
                 };
 
@@ -128,53 +139,91 @@ class SpotifyFinder
         $response = $this->connection->request('GET', $uri);
 
         if(array_get($response, 'error')) {
-            return Result::createEmptyResult();
+            return Option::of(null);
         }
 
-        $music = $responseToMusic($response);
-
-        return Result::createFoundResult($music);
+        return Option::of($responseToMusic($response));
     }
 
     /**
      * Take in a MusicInfo instance and find the resource ID. Returns null if
      * resource isn't found.
      *
-     * @param  MusicQuery $query
+     * @param  MusicInfo  $info
      *
-     * @return Result
+     * @return Option<MusicInfo>
      */
-    public function search(MusicQuery $query) : Result
+    public function search(MusicInfo $info) : Option
     {
+        $title = $info->getType() === 'track' ? $info->getTrack() : $info->getAlbum();
+
         $search = sprintf('artist:%s %s:%s',
-            $query->getArtist(),
-            $query->getType(),
-            $query->getTitle()
+            $info->getArtist(),
+            $info->getType(),
+            $title
         );
 
         $response = $this->connection->request('GET', 'v1/search', [
             'q' => $search,
-            'type' => $query->getType(),
+            'type' => $info->getType(),
             'limit' => 1,
         ]);
 
-        $result = array_get($response, 'tracks.items.0');
+        $resultType = $info->getType().'s';
+        $result = array_get($response, $resultType.'.items.0');
 
         if (empty($result)) {
-            return Result::createEmptyResult();
+            return Option::of(null);
         }
 
+        $artist = ($info->getType() === 'track')
+            ? array_get($result, 'album.artists.0.name')
+            : array_get($result, 'artists.0.name');
+
+        $albumName = ($info->getType() === 'track')
+            ? array_get($result, 'album.name')
+            : array_get($result, 'name');
+
+        $coverUrl = ($info->getType() === 'track')
+            ? array_get($result, 'album.images.0.url')
+            : array_get($result, 'images.0.url');
+
+        $trackName = ($info->getType() === 'track')
+            ? array_get($result, 'name')
+            : '';
+
         $music = new MusicInfo(
+            $this->getId(),
             array_get($result, 'id'),
-            array_get($result, 'album.name'),
-            array_get($result, 'name'),
-            'track',
-            array_get($result, 'album.artists.0.name'),
-            array_get($result, 'href'),
-            array_get($result, 'album.images.0.url')
+            $albumName,
+            $trackName,
+            array_get($result, 'type'),
+            $artist,
+            array_get($result, 'external_urls.spotify'),
+            $coverUrl
         );
 
-        return Result::createFoundResult($music);
+        return Option::of($music);
     }
 
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $uri
+     * @return Option<MusicSeed>
+     */
+    public function musicSeedFromUri(string $uri): Option
+    {
+        return $this
+            ->musicId($uri)
+            ->map(function (array $match) {
+                ['id' => $id, 'type' => $type] = $match;
+
+                return Option::of(new MusicSeed($this->getId(), $type, $id));
+            })
+            ->getOrElse(Option::of(null));
+    }
 }

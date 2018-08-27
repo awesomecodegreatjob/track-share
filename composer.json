@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "awesomecodegreatjob/track-share",
+    "description": "A music sharing app for all your friends.",
+    "keywords": ["application", "laravel"],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -14,7 +14,10 @@
         "laravel-frontend-presets/tailwindcss": "^0.6.1",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "^1.0",
-        "mervick/curl-helper": "^1.1"
+        "mervick/curl-helper": "^1.1",
+        "php-slang/php-slang": "^0.1.4",
+        "spatie/laravel-view-components": "^1.1",
+        "symfony/dom-crawler": "^4.1"
     },
     "require-dev": {
         "filp/whoops": "^2.0",

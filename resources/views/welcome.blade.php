@@ -8,7 +8,7 @@
                     <h1 class="text-grey-darker text-center font-thin tracking-wide text-5xl mb-6">
                         {{ config('app.name', 'Track Share') }}
                     </h1>
-                    <form action="{{ route('search') }}" method="get">
+                    <form action="{{ route('music.search') }}" method="get">
                         <input type="text" name="q" class="px-3 py-2 border border-grey">
                         <input type="submit" value="Search" class="px-3 py-2 bg-grey hover:bg-grey-dark cursor-pointer">
                     </form>

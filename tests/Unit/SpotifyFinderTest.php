@@ -3,7 +3,9 @@
 namespace Tests\Unit;
 
 use App\MusicInfo;
-use App\MusicSeed\MusicSeed;
+use App\MusicSeed;
+use PhpSlang\Either\Either;
+use PhpSlang\Option\Option;
 use Tests\TestCase;
 use Prophecy\Prophet;
 use App\SpotifyFinder;
@@ -19,7 +21,7 @@ class SpotifyFinderTest extends TestCase
     public function itValidatesUris()
     {
         $spotifyApiConnection = $this->getMockedSpotifyConnection();
-        $finder = new SpotifyFinder($spotifyApiConnection->reveal());
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
 
         $this->assertTrue($finder->matches('spotify:track:7H7T22yvZMLVzJHDONDYDp'));
         $this->assertTrue($finder->matches('https://open.spotify.com/album/1M1dhwZE65bqGfbUdMzvlj'));
@@ -30,81 +32,88 @@ class SpotifyFinderTest extends TestCase
     /** @test */
     public function itTranslatesAValidTrackUriToASeed()
     {
+        $uri = 'spotify:track:7H7T22yvZMLVzJHDONDYDp';
+
         $spotifyApiConnection = $this->getMockedSpotifyConnection();
-        $finder = new SpotifyFinder($spotifyApiConnection->reveal());
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
 
-        $resultSeed = $finder->musicSeedFromUri('spotify:track:7H7T22yvZMLVzJHDONDYDp');
+        $spotifyApiConnection
+            ->request('GET', 'v1/tracks/7H7T22yvZMLVzJHDONDYDp')
+            ->willReturn([
+                'id' => '7H7T22yvZMLVzJHDONDYDp',
+                'album' => [
+                    'name' => 'Foo',
+                ],
+            ]);
 
-        $this->assertInstanceOf(Result::class, $resultSeed);
-        $this->assertInstanceOf(ResultOk::class, $resultSeed);
+        $resultSeed = $finder->musicInfoFromUri($uri);
 
-        $this->assertEquals('track', $resultSeed->getType());
-        $this->assertEquals('7H7T22yvZMLVzJHDONDYDp', $resultSeed->getId());
-        $this->assertEquals('spotify', $resultSeed->getService());
+        $this->assertEquals('track', $resultSeed->get()->getType());
+        $this->assertEquals('7H7T22yvZMLVzJHDONDYDp', $resultSeed->get()->getId());
+        $this->assertEquals('spotify', $resultSeed->get()->getService());
     }
 
     /** @test */
     public function itTranslatesAValidAlbumUriToASeed()
     {
+        $uri = 'spotify:album:album123';
+
         $spotifyApiConnection = $this->getMockedSpotifyConnection();
-        $finder = new SpotifyFinder($spotifyApiConnection->reveal());
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
 
-        $resultSeed = $finder->musicSeedFromUri('spotify:album:album123');
+        $resultSeed = $finder->musicSeedFromUri($uri);
 
-        $this->assertInstanceOf(Result::class, $resultSeed);
-        $this->assertInstanceOf(ResultOk::class, $resultSeed);
+        $spotifyApiConnection
+            ->request('GET', 'v1/album/album123')
+            ->willReturn([
+                'id' => 'album123',
+                'album' => [
+                    'name' => 'Foo',
+                ],
+            ]);
 
-        $this->assertEquals('album', $resultSeed->getType());
-        $this->assertEquals('album123', $resultSeed->getId());
-        $this->assertEquals('spotify', $resultSeed->getService());
+        $this->assertEquals('album', $resultSeed->get()->getType());
+        $this->assertEquals('album123', $resultSeed->get()->getId());
+        $this->assertEquals('spotify', $resultSeed->get()->getService());
     }
 
     /** @test */
     public function itTranslatesAValidTrackWebUrlToASeed()
     {
         $spotifyApiConnection = $this->getMockedSpotifyConnection();
-        $finder = new SpotifyFinder($spotifyApiConnection->reveal());
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
 
         $resultSeed = $finder->musicSeedFromUri('https://open.spotify.com/track/trackabc');
 
-        $this->assertInstanceOf(Result::class, $resultSeed);
-        $this->assertInstanceOf(ResultOk::class, $resultSeed);
-
-        $this->assertEquals('track', $resultSeed->getType());
-        $this->assertEquals('trackabc', $resultSeed->getId());
-        $this->assertEquals('spotify', $resultSeed->getService());
+        $this->assertEquals('track', $resultSeed->get()->getType());
+        $this->assertEquals('trackabc', $resultSeed->get()->getId());
+        $this->assertEquals('spotify', $resultSeed->get()->getService());
     }
 
     /** @test */
     public function itTranslatesAValidAlbumWebUrlToASeed()
     {
         $spotifyApiConnection = $this->getMockedSpotifyConnection();
-        $finder = new SpotifyFinder($spotifyApiConnection->reveal());
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
 
         $resultSeed = $finder->musicSeedFromUri('https://open.spotify.com/album/album123');
 
-        $this->assertInstanceOf(Result::class, $resultSeed);
-        $this->assertInstanceOf(ResultOk::class, $resultSeed);
-
-        $this->assertEquals('album', $resultSeed->getType());
-        $this->assertEquals('album123', $resultSeed->getId());
-        $this->assertEquals('spotify', $resultSeed->getService());
+        $this->assertEquals('album', $resultSeed->get()->getType());
+        $this->assertEquals('album123', $resultSeed->get()->getId());
+        $this->assertEquals('spotify', $resultSeed->get()->getService());
     }
 
     /** @test */
     public function itTranslatesAnInvalidTrackUriToAnError()
     {
         $spotifyApiConnection = $this->getMockedSpotifyConnection();
-        $finder = new SpotifyFinder($spotifyApiConnection->reveal());
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
 
         $resultSeed = $finder->musicSeedFromUri('https://open.musicz.com/album/album123');
 
-        $this->assertInstanceOf(Result::class, $resultSeed);
-        $this->assertInstanceOf(ResultError::class, $resultSeed);
-
-        $this->assertEquals('Invalid music seed.', $resultSeed->getType());
-        $this->assertEquals('Invalid music seed.', $resultSeed->getId());
-        $this->assertEquals('Invalid music seed.', $resultSeed->getService());
+        $this->assertTrue($resultSeed->isEmpty());
+        $this->assertTrue($resultSeed->isEmpty());
+        $this->assertTrue($resultSeed->isEmpty());
     }
 
     /** @test */
@@ -118,17 +127,13 @@ class SpotifyFinderTest extends TestCase
                 json_decode($this->trackIdResultForStretchYourFace(), true)
             );
 
-        $finder = new SpotifyFinder($spotifyApiConnection->reveal());
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
 
-        $seed = MusicSeed::ok('spotify', 'track', '7H7T22yvZMLVzJHDONDYDp');
+        $seed = new MusicSeed('spotify', 'track', '7H7T22yvZMLVzJHDONDYDp');
 
         $musicInfoResult = $finder->musicInfoFromSeed($seed);
 
-        $response = $musicInfoResult->resolve();
-
-        $this->assertInstanceOf(MusicInfo::class, $response);
-
-        $this->assertEquals('Tobacco', $response->getArtist());
+        $this->assertEquals('Tobacco', $musicInfoResult->get()->getArtist());
     }
 
     /** @test */
@@ -141,20 +146,17 @@ class SpotifyFinderTest extends TestCase
                 json_decode($this->trackIdResultForStretchYourFace(), true)
             );
 
-        $finder = new SpotifyFinder($spotifyApiConnection->reveal());
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
 
-        $result = $finder->musicInfoById('track', '7H7T22yvZMLVzJHDONDYDp');
+        $result = $finder->musicInfoById('track', '7H7T22yvZMLVzJHDONDYDp')->get();
 
-        $response = $result->resolve();
-
-        $this->assertInstanceOf(MusicInfo::class, $response);
-        $this->assertEquals('7H7T22yvZMLVzJHDONDYDp', $response->getId());
-        $this->assertEquals('Stretch Your Face', $response->getTrack());
-        $this->assertEquals('Maniac Meat', $response->getAlbum());
-        $this->assertEquals('Tobacco', $response->getArtist());
-        $this->assertInternalType('string', $response->getImageUrl());
-        $this->assertEquals('https://open.spotify.com/track/7H7T22yvZMLVzJHDONDYDp', $response->getLink());
-        $this->assertEquals('track', $response->getType());
+        $this->assertEquals('7H7T22yvZMLVzJHDONDYDp', $result->getId());
+        $this->assertEquals('Stretch Your Face', $result->getTrack());
+        $this->assertEquals('Maniac Meat', $result->getAlbum());
+        $this->assertEquals('Tobacco', $result->getArtist());
+        $this->assertInternalType('string', $result->getImageUrl());
+        $this->assertEquals('https://open.spotify.com/track/7H7T22yvZMLVzJHDONDYDp', $result->getLink());
+        $this->assertEquals('track', $result->getType());
     }
 
     /** @test */
@@ -168,20 +170,18 @@ class SpotifyFinderTest extends TestCase
                 json_decode($this->albumIdResultForMellowGold(), true)
             );
 
-        $finder = new SpotifyFinder($spotifyApiConnection->reveal());
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
 
-        $result = $finder->musicInfoById('album', '1M1dhwZE65bqGfbUdMzvlj');
+        $result = $finder->musicInfoById('album', '1M1dhwZE65bqGfbUdMzvlj')->get();
 
-        $response = $result->resolve();
-
-        $this->assertInstanceOf(MusicInfo::class, $response);
-        $this->assertEquals('1M1dhwZE65bqGfbUdMzvlj', $response->getId());
-        $this->assertEquals('Mellow Gold', $response->getAlbum());
-        $this->assertEquals(null, $response->getTrack());
-        $this->assertEquals('Beck', $response->getArtist());
-        $this->assertInternalType('string', $response->getImageUrl());
-        $this->assertEquals('https://open.spotify.com/album/1M1dhwZE65bqGfbUdMzvlj', $response->getLink());
-        $this->assertEquals('album', $response->getType());
+        $this->assertInstanceOf(MusicInfo::class, $result);
+        $this->assertEquals('1M1dhwZE65bqGfbUdMzvlj', $result->getId());
+        $this->assertEquals('Mellow Gold', $result->getAlbum());
+        $this->assertEquals(null, $result->getTrack());
+        $this->assertEquals('Beck', $result->getArtist());
+        $this->assertInternalType('string', $result->getImageUrl());
+        $this->assertEquals('https://open.spotify.com/album/1M1dhwZE65bqGfbUdMzvlj', $result->getLink());
+        $this->assertEquals('album', $result->getType());
     }
 
     /** @test */
@@ -201,19 +201,52 @@ class SpotifyFinderTest extends TestCase
                 json_decode($this->albumIdResultNotFound(), true)
             );
 
-        $finder = new SpotifyFinder($spotifyApiConnection->reveal());
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
 
         $result = $finder->musicInfoById('track', 'doesnotexist');
-        $response = $result->resolve();
-        $this->assertNull($response);
+        $this->assertTrue($result->isEmpty());
 
         $result = $finder->musicInfoById('album', 'doesnotexist');
-        $response = $result->resolve();
-        $this->assertNull($response);
+        $this->assertTrue($result->isEmpty());
     }
 
     /** @test */
-    public function itSearchesForAResourceGivenAnAlbumOrTrackName()
+    public function itSearchesForAResourceGivenAnAlbumName()
+    {
+        $spotifyApiConnection = $this->getMockedSpotifyConnection();
+
+        $spotifyApiConnection
+            ->request('GET', 'v1/search', [
+                'q' => 'artist:Oh Sees album:Smote Reverser',
+                'type' => 'album',
+                'limit' => 1,
+            ])
+            ->willReturn(
+                json_decode($this->albumResultForSmoteReverser(), true)
+            );
+
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
+
+        $result = $finder->search(new MusicInfo(
+            'foo',
+            'testid',
+            'Smote Reverser',
+            '',
+            'album',
+            'Oh Sees',
+            'http://foo.bar',
+            'http://foo.bar/img_foo.jpg'
+        ));
+
+        $this->assertArraySubset([
+            'album' => 'Smote Reverser',
+            'track' => '',
+            'type' => 'album',
+        ], $result->get()->toArray());
+    }
+
+    /** @test */
+    public function itSearchesForAResourceGivenATrackName()
     {
         $spotifyApiConnection = $this->getMockedSpotifyConnection();
 
@@ -227,15 +260,21 @@ class SpotifyFinderTest extends TestCase
                 json_decode($this->trackResultForStretchYourFace(), true)
             );
 
-        $finder = new SpotifyFinder($spotifyApiConnection->reveal());
+        $finder = new SpotifyFinder('spotify', $spotifyApiConnection->reveal());
 
-        $result = $finder->search(new TrackQuery('Stretch Your Face', 'Tobacco'));
+        $result = $finder->search(new MusicInfo(
+            'foo',
+            'testid',
+            'Maniac Meat',
+            'Stretch Your Face',
+            'track',
+            'Tobacco',
+            'http://foo.bar',
+            'http://foo.bar/img_foo.jpg'
+        ));
 
-        $response = $result->resolve();
-
-        $this->assertInstanceOf(MusicInfo::class, $response);
-        $this->assertEquals('7H7T22yvZMLVzJHDONDYDp', $response->getId());
-        $this->assertEquals('Stretch Your Face', $response->getTrack());
+        $this->assertEquals('7H7T22yvZMLVzJHDONDYDp', $result->get()->getId());
+        $this->assertEquals('Stretch Your Face', $result->get()->getTrack());
     }
 
     /** @test */
@@ -253,13 +292,20 @@ class SpotifyFinderTest extends TestCase
                 json_decode($this->trackResultEmpty(), true)
             );
 
-        $finder = new SpotifyFinder($conn->reveal());
+        $finder = new SpotifyFinder('spotify', $conn->reveal());
 
-        $result = $finder->search(new TrackQuery('nothinghere', 'noone'));
+        $result = $finder->search(new MusicInfo(
+            'foo',
+            'testid',
+            'Maniac Meat',
+            'nothinghere',
+            'track',
+            'noone',
+            'http://foo.bar',
+            'http://foo.bar/img_foo.jpg'
+        ));
 
-        $response = $result->resolve();
-
-        $this->assertNull($response);
+        $this->assertTrue($result->isEmpty());
     }
 
     private function getMockedSpotifyConnection()
@@ -283,6 +329,11 @@ class SpotifyFinderTest extends TestCase
     private function trackIdResultForStretchYourFace()
     {
         return file_get_contents(__DIR__.'/../mocks/spotifyApi/getStretchYourFace.json');
+    }
+
+    private function albumResultForSmoteReverser()
+    {
+        return file_get_contents(__DIR__.'/../mocks/spotifyApi/searchForSmoteReverser.json');
     }
 
     private function trackResultForStretchYourFace()

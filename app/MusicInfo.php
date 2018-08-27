@@ -2,8 +2,11 @@
 
 namespace App;
 
-class MusicInfo
+use Illuminate\Contracts\Support\Arrayable;
+
+class MusicInfo implements Arrayable
 {
+    private $service;
     private $id;
     private $album;
     private $track;
@@ -13,6 +16,7 @@ class MusicInfo
     private $imageUrl;
 
     public function __construct(
+        string $service,
         string $id,
         string $album,
         string $track,
@@ -22,6 +26,7 @@ class MusicInfo
         string $imageUrl
     )
     {
+        $this->service = $service;
         $this->id = $id;
         $this->album = $album;
         $this->track = $track;
@@ -34,6 +39,7 @@ class MusicInfo
     public static function fromArray(array $info) : MusicInfo
     {
         $info = new static(
+            array_get($info, 'service'),
             array_get($info, 'id'),
             array_get($info, 'album'),
             array_get($info, 'track'),
@@ -44,6 +50,11 @@ class MusicInfo
         );
 
         return $info;
+    }
+
+    public function getService() : string
+    {
+        return $this->service;
     }
 
     public function getId() : string
@@ -79,5 +90,39 @@ class MusicInfo
     public function getImageUrl() : string
     {
         return $this->imageUrl;
+    }
+
+    public function isAlbum() : bool
+    {
+        return $this->getType() === 'album';
+    }
+
+    public function isTrack() : bool
+    {
+        return $this->getType() === 'track';
+    }
+
+    public static function Empty(string $service)
+    {
+        return new self($service, '', '', '', '', '', '', '');
+    }
+
+    /**
+     * Get the instance as an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'service' => $this->getService(),
+            'album' => $this->getAlbum(),
+            'track' => $this->getTrack(),
+            'type' => $this->getType(),
+            'artist' => $this->getArtist(),
+            'link' => $this->getLink(),
+            'imageUrl' => $this->getImageUrl(),
+        ];
     }
 }
