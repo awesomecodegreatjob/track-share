@@ -4,14 +4,14 @@ namespace Tests\Unit;
 
 use App\MusicInfo;
 use App\MusicSeed;
-use App\MusicService;
-use PhpSlang\Option\Option;
-use Prophecy\Argument;
-use Prophecy\Prophet;
 use Tests\TestCase;
+use Prophecy\Prophet;
+use App\MusicService;
+use Prophecy\Argument;
 use App\MusicServices;
 use App\SpotifyFinder;
 use App\GoogleMusicFinder;
+use PhpSlang\Option\Option;
 
 class MusicServicesTest extends TestCase
 {
@@ -28,11 +28,6 @@ class MusicServicesTest extends TestCase
     /** @test */
     public function itFetchesAListOfMusicProviders()
     {
-//        config([ 'musicServices' => [
-//            '' => GoogleMusicFinder::class,
-//            SpotifyFinder::class,
-//        ]]);
-
         $musicServices = (new MusicServices)->all();
 
         $this->assertCount(2, $musicServices);
@@ -46,6 +41,20 @@ class MusicServicesTest extends TestCase
         $notSpotify = (new MusicServices)->except('spotify');
 
         $this->assertCount(1, $notSpotify);
+    }
+
+    /** @test */
+    public function itFetchesTheSpecifiedService()
+    {
+        $service = (new MusicServices)->find('googleMusic');
+        $this->assertInstanceOf(GoogleMusicFinder::class, $service->get());
+    }
+
+    /** @test */
+    public function itReturnsEmptyResultWhenUnknownServiceRequested()
+    {
+        $service = (new MusicServices)->find('nope');
+        $this->assertTrue($service->isEmpty());
     }
 
     protected function getMockMusicService(

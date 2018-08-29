@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\MusicFinder;
 use App\MusicInfo;
 use App\MusicLink;
 use App\MusicSeed;
+use App\MusicFinder;
 use Illuminate\View\View;
-use Illuminate\Http\Request;
 
 class MusicLinkController extends Controller
 {

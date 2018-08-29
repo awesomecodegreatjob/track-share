@@ -64,16 +64,17 @@ class MusicFinder
     }
 
 
-    // @todo Test this!
-
     /**
      * @param  MusicSeed  $seed
      * @return  Option<MusicInfo>
      */
     public function getMusicInfoFromSeed(MusicSeed $seed) : Option
     {
-        $origin = $this->musicServices->find($seed->getService());
-
-        return $origin->musicInfoFromSeed($seed);
+        return $this
+            ->musicServices
+            ->find($seed->getService())
+            ->flatMap(function (MusicService $service) use ($seed) {
+                return $service->musicInfoFromSeed($seed);
+            });
     }
 }

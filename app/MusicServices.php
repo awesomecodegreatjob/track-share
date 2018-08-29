@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Support\Collection;
+use PhpSlang\Option\Option;
 
 class MusicServices
 {
@@ -23,13 +24,18 @@ class MusicServices
             });
     }
 
-    // Todo  Test this!
-    function find(string $service) : MusicService
+    /**
+     * @param string $service
+     * @return Option<MusicService>
+     */
+    function find(string $service) : Option
     {
-        return $this
+        $service = $this
             ->all()
             ->first(function (MusicService $s) use ($service) {
                 return $s->getId() === $service;
             });
+
+        return Option::of($service);
     }
 }
