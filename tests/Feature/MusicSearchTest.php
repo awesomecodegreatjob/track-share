@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\MusicLink;
+use PhpSlang\Option\Option;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -13,13 +14,14 @@ class MusicSearchTest extends TestCase
     /** @test */
     public function itTakesAUriAndRedirectsToALink()
     {
-        $this->disableExceptionHandling();
+        MusicLink::setKey('aaa');
+
         $result = $this->get(
             url()->route('music.search', [ 'q' => 'spotify:track:7H7T22yvZMLVzJHDONDYDp'])
         );
 
         $result->assertRedirect(
-            url()->route('music.link', [ 'key' => 1 ])
+            url()->route('music.link', [ 'key' => 'aaa' ])
         );
     }
 

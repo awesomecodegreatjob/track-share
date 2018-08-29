@@ -16,7 +16,7 @@ class CreateMusicLinksTable extends Migration
         Schema::create('music_links', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('key')->index();
+            $table->string('key')->unique();
             $table->text('seeds');
 
             $table->timestamps();

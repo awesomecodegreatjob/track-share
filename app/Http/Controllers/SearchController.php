@@ -44,11 +44,8 @@ class SearchController extends Controller
                 return new MusicSeed($i->getService(), $i->getType(), $i->getId());
             });
 
-        $link = MusicLink::create([
-            'key' => 'abc',
-            'seeds' => $seeds,
-        ]);
+        $link = MusicLink::saveSeeds($seeds);
 
-        return redirect()->route('music.link', [ $link->id ]);
+        return redirect()->route('music.link', [ $link->key ]);
     }
 }

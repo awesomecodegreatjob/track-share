@@ -18,9 +18,9 @@ class MusicLinkController extends Controller
         $this->finder = $finder;
     }
 
-    public function html($id)
+    public function html($key)
     {
-        $link = MusicLink::find($id);
+        $link = MusicLink::getByKey($key);
 
         if ($link) {
             return $this->renderMusicInfo($link);
