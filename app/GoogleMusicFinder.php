@@ -3,6 +3,7 @@
 namespace App;
 
 use CurlHelper;
+use Illuminate\Support\Facades\Cache;
 use PhpSlang\Option\Option;
 use InvalidArgumentException;
 use Symfony\Component\DomCrawler\Crawler;
@@ -114,13 +115,21 @@ class GoogleMusicFinder implements MusicService
      */
     public function musicInfoFromSeed(MusicSeed $seed): Option
     {
+        $seedKey = sprintf('%s:%s:%s',
+            $seed->getService(),
+            $seed->getType(),
+            $seed->getId()
+        );
+
+        if (Cache::has($seedKey)) {
+            return Option::of(Cache::get($seedKey));
+        }
+
         if ($seed->getService() !== $this->getId()) {
             return Option::of(null);
         }
 
-        return $this->fetchMusicInfo(
-            $seed->getId()
-        );
+        return $this->fetchMusicInfo($seed->getId());
     }
 
     public function getId(): string
@@ -184,16 +193,12 @@ class GoogleMusicFinder implements MusicService
 
         $link = sprintf('https://play.google.com/music/m/%s', $id);
 
-        return Option::of(new MusicInfo(
-            $this->getId(),
-            $id,
-            $album,
-            $track,
-            $type,
-            $artist,
-            $link,
-            $image
-        ));
+        $info = new MusicInfo($this->getId(), $id, $album, $track, $type, $artist, $link, $image);
+
+        $seedKey = sprintf('%s:%s:%s', $this->getId(), $type, $id);
+        Cache::put($seedKey, $info, 180);
+
+        return Option::of($info);
     }
 
     /**

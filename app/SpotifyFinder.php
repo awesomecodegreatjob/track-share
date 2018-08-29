@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Cache;
 use PhpSlang\Option\Option;
 use App\Spotify\Contracts\ApiConnection;
 
@@ -81,6 +82,16 @@ class SpotifyFinder implements MusicService
 
     public function musicInfoFromSeed(MusicSeed $seed) : Option
     {
+        $seedKey = sprintf('%s:%s:%s',
+            $seed->getService(),
+            $seed->getType(),
+            $seed->getId()
+        );
+
+        if (Cache::has($seedKey)) {
+            return Option::of(Cache::get($seedKey));
+        }
+
         return $this->musicInfoById(
             $seed->getType(),
             $seed->getId()
@@ -142,7 +153,12 @@ class SpotifyFinder implements MusicService
             return Option::of(null);
         }
 
-        return Option::of($responseToMusic($response));
+        $info = $responseToMusic($response);
+
+        $seedKey = sprintf('%s:%s:%s', $this->getId(), $type, $id);
+        Cache::put($seedKey, $info, 180);
+
+        return Option::of($info);
     }
 
     /**

@@ -30,7 +30,7 @@ class MusicLinkTest extends TestCase
             ],
         ]);
 
-        $response = $this->get(url()->route('music.link', [ 1 ]));
+        $response = $this->get(url()->route('music.link', [ 'xxx' ]));
 
         $response->assertSee('Tobacco');
         $response->assertSee('Stretch Your Face');
