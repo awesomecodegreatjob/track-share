@@ -19,9 +19,9 @@
 
 @section('body')
     <div class="pb-4 sm:w-3/5 mx-auto sm:mt-6">
-        <header class="flex justify-between items-end">
-            <h1 class="font-sans pb-4">{{ config('app.name', 'Laravel') }}</h1>
-            <a href="/" class="hover:underline pb-4 no-underline text-grey-darker">Share Another</a>
+        <header class="flex justify-between items-center items-end py-4 px-4 sm:px-0 sm:pt-0 sm:items-baseline">
+            <h1 class="font-sans">{{ config('app.name', 'Laravel') }}</h1>
+            <a href="/" class="hover:underline no-underline text-grey-darker">Share Another</a>
         </header>
         <div class="w-full overflow-hidden bg-white sm:rounded sm:shadow-lg">
             <img class="w-full" src="{{ $info->getImageUrl() }}" alt="Sunset in the mountains">
